@@ -1,8 +1,9 @@
 // +build windows
-package platform
+package javahelper
 
 import (
 	"os/exec"
+	"path/filepath"
 	"syscall"
 )
 
@@ -12,20 +13,27 @@ const WHERE = "where"
 // OS = Operating System name for AdoptOpenJDK API
 const OS = "windows"
 
-// InstallJava downloads and install Java from AdoptOpenJDK
-func InstallJava(architecture string, javaVersion int) (string, error) {
-	filename, err := DownloadJava(architecture, javaVersion)
+// ARCHITECTURE = Architecture name for AdoptOpenJDK API
+const ARCHITECTURE = "x64"
 
-	//installing it
-	println("Installing: " + exeDir + "\\" + filename + "...")
-	cmd := Command("cmd.exe", "/C", "msiexec.exe", "/i", exeDir+"\\"+filename, "/passive")
+// INSTALLER = installer url fragment for AdoptOpenJDK API
+const INSTALLER = "installer"
+
+// EXTENSION = Extension for the downloaded file
+const EXTENSION = ".msi"
+
+// InstallJava downloads and install Java from AdoptOpenJDK
+func InstallJava(filename string) error {
+	println("Installing: " + filename + "...")
+
+	cmd := Command("cmd.exe", "/C", "msiexec.exe", "/i", filepath.Abs(filename), "/passive")
 	msiCom, err := cmd.CombinedOutput()
 	if err != nil {
-		return string(msiCom), err
+		println(string(msiCom))
+		return err
 	}
 
-	println(string(msiCom))
-	return GetJava(javaVersion)
+	return nil
 }
 
 //Command works as exec.Command but add the required OS flags to hide the window for the command

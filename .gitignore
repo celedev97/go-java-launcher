@@ -42,7 +42,9 @@
 
 # JavaLauncher files
 *.msi
+*.tar.gz
 *.jar
+java
 
 # rsrc stuff
 *.syso
