@@ -19,7 +19,7 @@ jobs:
 
     - name: Build
       run: |
-        go build
+        go get github.com/akavel/rsrc
         rsrc -ico icon.ico
         go build -ldflags -H=windowsgui
         
