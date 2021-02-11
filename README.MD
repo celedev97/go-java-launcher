@@ -30,7 +30,11 @@ if you download a release the .exe will have the default icon and no app manifes
 To build this launcher you need to have [Golang](https://golang.org/dl/) and **Make**, then run:
 
 ```
-make
+make windows
+```
+or:
+```
+make linux
 ```
 
 If you don't want to install **make** you can simply copy the commands in the [Makefile](Makefile) to build this program.
