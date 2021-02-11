@@ -27,13 +27,15 @@ if you download a release the .exe will have the default icon and no app manifes
 
 ### Build it
 
-To build this launcher you need to install [Golang](https://golang.org/dl/) and add it to the PATH.
-
-If you build it on windows you will be able to specify icon and manifest file by using [akavel/rsrc](github.com/akavel/rsrc) in this way:
+To build this launcher you need to have [Golang](https://golang.org/dl/) and **Make**, then run:
 
 ```
-rsrc -ico icon.ico
-go build -ldflags -H=windowsgui
+make
 ```
 
-The project already have a dependency on akavel/rsrc so you could install it even by just running `go build` once at first.
+If you don't want to install **make** you can simply copy the commands in the [Makefile](Makefile) to build this program.
+
+(But seriously... install **make** you'll need it sooner or later)
+
+
+If you build it on windows you will be able to chose the launcher icon by replacing [resources/icon.ico](resources/icon.ico)
