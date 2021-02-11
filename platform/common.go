@@ -1,4 +1,4 @@
-package main
+package platform
 
 import (
 	"bufio"
@@ -22,7 +22,7 @@ func getExeDir() string {
 	return exeDir
 }
 
-func pause() {
+func Pause() {
 	println("Press 'Enter' to close...")
 	bufio.NewReader(os.Stdin).ReadBytes('\n')
 }
@@ -49,9 +49,9 @@ func downloadFile(url string, filepath string) error {
 	return err
 }
 
-//Download a Java installer
-//return a string containing the installer location, if something goes wrong it returns an error
-func downloadJava(architecture string, javaVersion int) (string, error) {
+//DownloadJava downloads a Java installer, and return a string containing the installer location,
+//if something goes wrong it returns an error
+func DownloadJava(architecture string, javaVersion int) (string, error) {
 	version := strconv.Itoa(javaVersion)
 	url := "https://api.adoptopenjdk.net/v3/installer/latest/" + version + "/ga/windows/" + architecture + "/jre/hotspot/normal/adoptopenjdk"
 	filename := "adoptopenjdk.jre." + version + "." + architecture + ".msi"
@@ -65,10 +65,11 @@ func downloadJava(architecture string, javaVersion int) (string, error) {
 	return filename, nil
 }
 
-// return the path to the java executable for the desired version of the jre
-func getJava(version int) (string, error) {
+//GetJava return the path to the java executable for the desired version of the jre,
+//if there's no installed Java version that matches the required one it returns an error
+func GetJava(version int) (string, error) {
 	// Executing "where java"
-	whereJavaOutput, err := command(WHERE, "java").CombinedOutput()
+	whereJavaOutput, err := Command(WHERE, "java").CombinedOutput()
 	if err != nil {
 		return "", err
 	}
@@ -83,7 +84,7 @@ func getJava(version int) (string, error) {
 		java = strings.Trim(java, " \t\n\r")
 
 		// Getting the version string
-		javaVersionOutput, _ := command(java, "-version").CombinedOutput()
+		javaVersionOutput, _ := Command(java, "-version").CombinedOutput()
 
 		// Extracting the version from the string
 		re := regexp.MustCompile(`"[0-9\.\_]+"`)
@@ -98,25 +99,11 @@ func getJava(version int) (string, error) {
 	return "", errors.New("Java " + strconv.Itoa(version) + " not found!")
 }
 
-func main() {
-	javaVersion := 11
-	java, err := getJava(javaVersion)
+//RunJava is just a shortcut for javaw -jar filename
+func RunJava(java string, filename string) error {
+	absoluteFileName, err := filepath.Abs(filename)
 	if err != nil {
-		println(err.Error())
-		java, err = installJava("x64", javaVersion)
-		if err != nil {
-			println(java)
-			println(err.Error())
-			pause()
-			return
-		}
+		return err
 	}
-
-	println(java)
-
-	err = command(java, "-jar", exeDir+"/app.jar").Start()
-	if err != nil {
-		println(err.Error())
-		pause()
-	}
+	return Command(java, "-jar", absoluteFileName).Start()
 }

@@ -1,5 +1,5 @@
 // +build linux
-package main
+package platform
 
 import "os/exec"
 
@@ -9,7 +9,7 @@ const WHERE = "which"
 // OS = Operating System name for AdoptOpenJDK API
 const OS = "linux"
 
-func command(name string, args ...string) *exec.Cmd {
+func Command(name string, args ...string) *exec.Cmd {
 	cmd := exec.Command(name, args...)
 	return cmd
 }

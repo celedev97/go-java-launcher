@@ -34,6 +34,12 @@
 
 # CUSTOM
 
+# original icon psd
+*.psd
+
+# Binaries
+/bin
+
 # JavaLauncher files
 *.msi
 *.jar
