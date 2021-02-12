@@ -18,10 +18,34 @@ jobs:
         go-version: 1.15
     
     - name: Build
-      run: make
+      run: make windows
         
     - name: Save artifact
       uses: actions/upload-artifact@v2
       with:
         name: windows_build
-        path: bin/go-java-launcher.exe
+        path: |
+          bin/go-java-launcher.exe
+          go-java.json
+    
+  linux:
+    name: Build for linux
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+      
+    - name: Build
+      run: make linux
+        
+    - name: Save artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux_build
+        path: |
+          bin/go-java-launcher
+          go-java.json
