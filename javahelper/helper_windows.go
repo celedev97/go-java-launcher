@@ -2,6 +2,7 @@
 package javahelper
 
 import (
+	"errors"
 	"os/exec"
 	"path/filepath"
 	"syscall"
@@ -30,13 +31,15 @@ func GetJava(version int) (string, error) {
 	if len(validJavas) > 0 {
 		return validJavas[0], nil
 	}
+	return "", errors.New("suitable Java not found")
 }
 
 // InstallJava downloads and install Java from AdoptOpenJDK
 func InstallJava(filename string, version int) error {
 	println("Installing: " + filename + "...")
+	absFileName, _ := filepath.Abs(filename)
 
-	cmd := Command("cmd.exe", "/C", "msiexec.exe", "/i", filepath.Abs(filename), "/passive")
+	cmd := Command("cmd.exe", "/C", "msiexec.exe", "/i", absFileName, "/passive")
 	msiCom, err := cmd.CombinedOutput()
 	if err != nil {
 		println(string(msiCom))
@@ -51,8 +54,4 @@ func Command(name string, args ...string) *exec.Cmd {
 	cmd := exec.Command(name, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	return cmd
-}
-
-func ProgressBarWindow() {
-
 }
