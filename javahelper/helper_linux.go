@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 )
 
 // WHERE = Where/which command for current OS
@@ -39,31 +40,33 @@ func Command(name string, args ...string) *exec.Cmd {
 //GetJava get the desired java from the installed ones,
 //return an error if something goes wrong or if there is no java
 func GetJava(version int) (string, error) {
-	installedJavas, _ := whereJava()
-	validJavas := filterJavas(version, installedJavas)
-	if len(validJavas) > 0 {
-		return validJavas[0], nil
-	}
-
 	//searching for the bin folder
-	bins, err := filepath.Glob(javaDir + "/*/bin/java")
+	bins, err := filepath.Glob(javaDir + "/" + strconv.Itoa(version) + "/*/bin/java")
 	if err != nil {
 		return "", err
 	} else if len(bins) != 0 {
 		return bins[0], nil
 	}
 
+	//using which
+	installedJavas, _ := whereJava()
+	validJavas := filterJavas(version, installedJavas)
+	if len(validJavas) > 0 {
+		return validJavas[0], nil
+	}
+
 	return "", errors.New("Can't find a suitable java")
 }
 
 // InstallJava downloads and extract Java from AdoptOpenJDK
-func InstallJava(filename string) error {
+func InstallJava(filename string, version int) error {
 	println("Installing: " + filename + "...")
+	installDir := javaDir + "/" + strconv.Itoa(version)
 
 	//tar -xf OpenJDK8U-jdk_x64_linux_hotspot_8u*.tar.gz
-	os.Mkdir(javaDir, 0755)
+	os.MkdirAll(installDir, 0755)
 
-	cmd := Command("tar", "-xf", filename, "-C", javaDir)
+	cmd := Command("tar", "-xf", filename, "-C", installDir)
 	untar, err := cmd.CombinedOutput()
 	if err != nil {
 		println(string(untar))

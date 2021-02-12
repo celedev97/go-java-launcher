@@ -43,3 +43,11 @@ If you don't want to install **make** you can simply copy the commands in the [M
 
 
 If you build it on windows you will be able to chose the launcher icon by replacing [resources/icon.ico](resources/icon.ico)
+
+## Configuration
+
+For configurations you can put a file named go-java.json in the same folder where you put the launcher.
+
+For now the json configuration file allow you to choose the java version that you want to use and the name of the jar.
+
+The default go-java.json is available here: [go-java.json](go-java.json)

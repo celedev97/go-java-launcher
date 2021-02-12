@@ -14,7 +14,7 @@ func DownloadJava(javaVersion int) (string, error) {
 	version := strconv.Itoa(javaVersion)
 	filename := "adoptopenjdk.jre." + version + "." + ARCHITECTURE + EXTENSION
 
-	if !fileExists(filename) {
+	if !FileExists(filename) {
 		//downloading the jre
 		url := "https://api.adoptopenjdk.net/v3/" + INSTALLER + "/latest/" + version + "/ga/" + OS + "/" + ARCHITECTURE + "/jre/hotspot/normal/adoptopenjdk"
 		println("Downloading: " + filename + " from " + url + " ...")

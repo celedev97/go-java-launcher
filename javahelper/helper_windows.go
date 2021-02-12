@@ -33,7 +33,7 @@ func GetJava(version int) (string, error) {
 }
 
 // InstallJava downloads and install Java from AdoptOpenJDK
-func InstallJava(filename string) error {
+func InstallJava(filename string, version int) error {
 	println("Installing: " + filename + "...")
 
 	cmd := Command("cmd.exe", "/C", "msiexec.exe", "/i", filepath.Abs(filename), "/passive")
