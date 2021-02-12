@@ -23,48 +23,52 @@ const INSTALLER = "binary"
 // EXTENSION = Extension for the downloaded file
 const EXTENSION = ".tar.gz"
 
-//Command works as exec.Command but add the required OS flags to hide the window for the command
-func Command(name string, args ...string) *exec.Cmd {
-	cmd := exec.Command(name, args...)
-	return cmd
+var homeDir string
+var javaDir string
+
+func init() {
+	homeDir, _ = os.UserHomeDir()
+	javaDir = homeDir + "/.javas"
 }
 
-// InstallJava downloads and install Java from AdoptOpenJDK
+//Command works as exec.Command but add the required OS flags to hide the window for the command
+func Command(name string, args ...string) *exec.Cmd {
+	return exec.Command(name, args...)
+}
+
+//GetJava get the desired java from the installed ones,
+//return an error if something goes wrong or if there is no java
+func GetJava(version int) (string, error) {
+	installedJavas, _ := whereJava()
+	validJavas := filterJavas(version, installedJavas)
+	if len(validJavas) > 0 {
+		return validJavas[0], nil
+	}
+
+	//searching for the bin folder
+	bins, err := filepath.Glob(javaDir + "/*/bin/java")
+	if err != nil {
+		return "", err
+	} else if len(bins) != 0 {
+		return bins[0], nil
+	}
+
+	return "", errors.New("Can't find a suitable java")
+}
+
+// InstallJava downloads and extract Java from AdoptOpenJDK
 func InstallJava(filename string) error {
 	println("Installing: " + filename + "...")
 
 	//tar -xf OpenJDK8U-jdk_x64_linux_hotspot_8u*.tar.gz
-	os.RemoveAll("java")
-	os.Mkdir("java", 0755)
+	os.Mkdir(javaDir, 0755)
 
-	cmd := Command("tar", "-xf", filename, "-C", "java")
+	cmd := Command("tar", "-xf", filename, "-C", javaDir)
 	untar, err := cmd.CombinedOutput()
 	if err != nil {
 		println(string(untar))
 		return err
 	}
-
-	//searching for the bin folder
-	javaBinGlob, _ := filepath.Abs("java/*/bin")
-	bins, err := filepath.Glob(javaBinGlob)
-	if err != nil {
-		return err
-	} else if len(bins) == 0 {
-		return errors.New("no java bin folder found")
-	}
-
-	//finding the home directory
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		println("Couldn't find user home directory")
-		return err
-	}
-
-	//exporting the bin folder to PATH
-	path := "\n# added by go-java-launcher\nexport PATH=$PATH:" + bins[0] + "\n"
-
-	FileAppend(homeDir+"/.profile", path)
-	FileAppend(homeDir+"/.bashrc", path)
 
 	return nil
 }

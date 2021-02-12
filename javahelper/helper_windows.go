@@ -22,6 +22,16 @@ const INSTALLER = "installer"
 // EXTENSION = Extension for the downloaded file
 const EXTENSION = ".msi"
 
+//GetJava get the desired java from the installed ones,
+//return an error if something goes wrong or if there is no java
+func GetJava(version int) (string, error) {
+	installedJavas, _ := whereJava()
+	validJavas := filterJavas(version, installedJavas)
+	if len(validJavas) > 0 {
+		return validJavas[0], nil
+	}
+}
+
 // InstallJava downloads and install Java from AdoptOpenJDK
 func InstallJava(filename string) error {
 	println("Installing: " + filename + "...")

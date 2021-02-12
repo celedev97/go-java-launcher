@@ -1,7 +1,6 @@
 package javahelper
 
 import (
-	"errors"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -13,11 +12,11 @@ import (
 //if something goes wrong it returns an error
 func DownloadJava(javaVersion int) (string, error) {
 	version := strconv.Itoa(javaVersion)
-	url := "https://api.adoptopenjdk.net/v3/" + INSTALLER + "/latest/" + version + "/ga/" + OS + "/" + ARCHITECTURE + "/jre/hotspot/normal/adoptopenjdk"
 	filename := "adoptopenjdk.jre." + version + "." + ARCHITECTURE + EXTENSION
 
 	if !fileExists(filename) {
 		//downloading the jre
+		url := "https://api.adoptopenjdk.net/v3/" + INSTALLER + "/latest/" + version + "/ga/" + OS + "/" + ARCHITECTURE + "/jre/hotspot/normal/adoptopenjdk"
 		println("Downloading: " + filename + " from " + url + " ...")
 
 		err := downloadFile(url, filename)
@@ -31,13 +30,12 @@ func DownloadJava(javaVersion int) (string, error) {
 	return filename, nil
 }
 
-//GetJava return the path to the java executable for the desired version of the jre,
-//if there's no installed Java version that matches the required one it returns an error
-func GetJava(version int) (string, error) {
+//WhereJava run where/which java to search for java installations
+func whereJava() ([]string, error) {
 	// Executing "where java"
 	whereJavaOutput, err := Command(WHERE, "java").CombinedOutput()
 	if err != nil {
-		return err.Error(), err
+		return nil, err
 	}
 
 	//trimming it to remove eventual extra lines
@@ -45,10 +43,18 @@ func GetJava(version int) (string, error) {
 
 	// Looping trough results and checking their versions
 	javas := strings.Split(stringJavaOutput, "\n")
-	for _, java := range javas {
+	for i, java := range javas {
 		//trimming the line again because there are occasionally some \r at the end of the line
-		java = strings.Trim(java, " \t\n\r")
+		javas[i] = strings.Trim(java, " \t\n\r")
+	}
 
+	return javas, nil
+}
+
+func filterJavas(version int, javas []string) []string {
+	output := []string{}
+
+	for _, java := range javas {
 		// Getting the version string
 		javaVersionOutput, _ := Command(java, "-version").CombinedOutput()
 
@@ -59,10 +65,10 @@ func GetJava(version int) (string, error) {
 		//getting only the major version of java as an integer
 		majorVersion, _ := strconv.Atoi(strings.Split(fullVersion, ".")[0])
 		if version == majorVersion {
-			return strings.Replace(java, "java.exe", "javaw.exe", -1), nil
+			output = append(output, java)
 		}
 	}
-	return "", errors.New("Java " + strconv.Itoa(version) + " not found!")
+	return output
 }
 
 //RunJava is just a shortcut for javaw -jar filename
