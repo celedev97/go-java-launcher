@@ -47,4 +47,13 @@
 java
 
 # rsrc stuff
+rsrc
+rsrc.exe
 *.syso
+
+# nektos/act
+act
+.actrc
+
+#java log
+*.log
