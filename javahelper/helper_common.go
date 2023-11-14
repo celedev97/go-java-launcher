@@ -16,7 +16,7 @@ func DownloadJava(javaVersion int) (string, error) {
 
 	if !FileExists(filename) {
 		//downloading the jre
-		url := "https://api.adoptopenjdk.net/v3/" + INSTALLER + "/latest/" + version + "/ga/" + OS + "/" + ARCHITECTURE + "/jre/hotspot/normal/adoptopenjdk"
+		url := "https://api.adoptium.net/v3/" + INSTALLER + "/latest/" + version + "/ga/" + OS + "/" + ARCHITECTURE + "/jre/hotspot/normal/eclipse"
 		println("Downloading: " + filename + " from " + url + " ...")
 
 		err := downloadFile(url, filename)
