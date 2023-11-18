@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -22,7 +21,7 @@ func main() {
 	launch := "./app.jar"
 
 	//reading the configuration file
-	bytes, err := ioutil.ReadFile(CONFIG)
+	bytes, err := os.ReadFile(CONFIG)
 	if err == nil {
 		//setting a json decoder that pass the numbers as strings (better than having an unknow type)
 		decoder := json.NewDecoder(strings.NewReader((string)(bytes)))

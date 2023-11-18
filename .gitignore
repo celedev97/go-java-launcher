@@ -57,3 +57,6 @@ act
 
 #java log
 *.log
+
+# idea
+.idea
