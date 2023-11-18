@@ -1,4 +1,4 @@
 {
-    "javaVersion": 11,
+    "javaVersion": 17,
     "launch": "./app.jar"
 }
