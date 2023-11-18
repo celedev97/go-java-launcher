@@ -9,6 +9,7 @@ windows:
 	go build -o ./bin/go-java-launcher_windows.exe -ldflags -H=windowsgui
 
 linux:
+	apt-get install xorg-dev
 	export GOOS=linux
 	export GOARCH=amd64
 	go build -o ./bin/go-java-launcher_linux
