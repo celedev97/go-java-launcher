@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	helper "github.com/fcdev/go-java-launcher/javahelper"
+	helper "github.com/celedev97/go-java-launcher/javahelper"
 )
 
 func criticalError(err error) {
@@ -17,7 +17,7 @@ func criticalError(err error) {
 const CONFIG string = "go-java.json"
 
 func main() {
-	javaVersion := 11
+	javaVersion := 21
 	launch := "./app.jar"
 
 	//reading the configuration file
@@ -34,6 +34,9 @@ func main() {
 			//reading javaVersion
 			if val, exists := settings["javaVersion"]; exists {
 				javaVersion, err = strconv.Atoi(val.(json.Number).String())
+				if err != nil {
+					javaVersion = 21
+				}
 			}
 			if val, exists := settings["launch"]; exists {
 				launch = val.(string)
@@ -62,7 +65,10 @@ func main() {
 
 	println("FOUND JAVA: " + java)
 
-	err = helper.RunJava(java, launch)
+	//get arguments
+	args := os.Args[1:]
+
+	err = helper.RunJava(java, launch, args)
 	if err != nil {
 		criticalError(err)
 	}

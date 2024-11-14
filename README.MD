@@ -1,53 +1,41 @@
 # Go Java Launcher
 
-## Problems?
-Have you ever wrote a super cool Java/Kotlin desktop application and packaged it in a **jar** just to find out that most users will not have a JRE installed?
+## Overview
 
-Or have you ever found someone giving you weird bug reports because they have an outdated version of Java while you're developing for Java 11?
+`Go Java Launcher` is a launcher for JAR files that searches for the appropriate JRE version and launches the JAR with that version. It ensures compatibility by downloading and installing the required JRE from AdoptOpenJDK if it is not already installed.
 
-If you did, then you just found the solution!
+## Problem Statement
 
-## Solution!
-`Go Java Launcher` is a launcher for jar files, that will search for the right JRE version and launch the jar with that version.
+Developers often encounter issues when users do not have the required JRE installed or are using an outdated version. This can lead to compatibility problems and bug reports that are difficult to resolve.
 
-Now... what's the point of this if there are more mature project like launch4j?
+## Solution
 
-The point is that `Go Java Launcher` will work even if the JRE is not installed, if it can't find a suitable JRE it will download the one you want from AdoptOpenJDK and it will install it before launching the jar, all pretty fastly and without requiring user interaction.
+`Go Java Launcher` addresses these issues by automatically managing the JRE version. It ensures that the correct JRE is used, even if it needs to be downloaded and installed, all without requiring user interaction.
 
-## Get it
+## Getting Started
 
 ### Release
 
-If you go on releases you will find the builds for windows and linux, currently it is only available for x64 machine, if you want the launcher to support more architectures...
+Pre-built binaries for Windows and Linux (x64) are available on the [releases](https://github.com/your-repo/releases) page. Note that the Windows release may have a default icon and no app manifest. You can customize these using tools like Resource Hacker, or you can build the launcher from source.
 
-Do a pull request, i'm too lazy to do that ;D
+### Building from Source
 
-On windows there are a pair of downsides to using the release: 
-if you download a release the .exe will have the default icon and no app manifest, feel free to change them with resourcehack to give the launcher the aspect of something that's part of your app.
+To build the launcher, you need [Golang](https://golang.org/dl/) and **Make**. Run the following commands:
 
-### Build it
-
-To build this launcher you need to have [Golang](https://golang.org/dl/) and **Make**, then run:
-
+For Windows:
 ```
 make windows
 ```
-or:
+
+For Linux:
 ```
 make linux
 ```
 
-If you don't want to install **make** you can simply copy the commands in the [Makefile](Makefile) to build this program.
+If you prefer not to install **Make**, you can manually execute the commands listed in the [Makefile](Makefile).
 
-(But seriously... install **make** you'll need it sooner or later)
-
-
-If you build it on windows you will be able to chose the launcher icon by replacing [resources/icon.ico](resources/icon.ico)
+On Windows, you can customize the launcher icon by replacing [resources/icon.ico](resources/icon.ico).
 
 ## Configuration
 
-For configurations you can put a file named go-java.json in the same folder where you put the launcher.
-
-For now the json configuration file allow you to choose the java version that you want to use and the name of the jar.
-
-The default go-java.json is available here: [go-java.json](go-java.json)
+Configuration is managed via a `go-java.json` file placed in the same directory as the launcher. This JSON file allows you to specify the desired Java version and the name of the JAR file to be launched. A default configuration file is available here: [go-java.json](go-java.json).

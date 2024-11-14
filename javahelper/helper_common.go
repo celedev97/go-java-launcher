@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-//DownloadJava downloads a Java installer, and return a string containing the installer location,
-//if something goes wrong it returns an error
+// DownloadJava downloads a Java installer, and return a string containing the installer location,
+// if something goes wrong it returns an error
 func DownloadJava(javaVersion int) (string, error) {
 	version := strconv.Itoa(javaVersion)
 	filename := "adoptopenjdk.jre." + version + "." + ARCHITECTURE + EXTENSION
@@ -30,7 +30,7 @@ func DownloadJava(javaVersion int) (string, error) {
 	return filename, nil
 }
 
-//WhereJava run where/which java to search for java installations
+// WhereJava run where/which java to search for java installations
 func whereJava() ([]string, error) {
 	// Executing "where java"
 	whereJavaOutput, err := Command(WHERE, "java").CombinedOutput()
@@ -71,12 +71,17 @@ func filterJavas(version int, javas []string) []string {
 	return output
 }
 
-//RunJava is just a shortcut for javaw -jar filename
-func RunJava(java string, filename string) error {
+// RunJava is just a shortcut for javaw -jar filename
+func RunJava(java string, filename string, args []string) error {
 	absoluteFileName, err := filepath.Abs(filename)
 	if err != nil {
 		return err
 	}
-	println(java, " -jar ", absoluteFileName)
-	return Command(java, "-jar", absoluteFileName).Start()
+
+	//put filename as the first argument, -jar as the second and the rest of the arguments after
+	args = append([]string{"-jar"}, args...)
+	args = append([]string{absoluteFileName}, args...)
+
+	println(java, strings.Join(args, " "))
+	return Command(java, args...).Run()
 }
