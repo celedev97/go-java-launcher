@@ -21,6 +21,7 @@ func main() {
 	launch := "./app.jar"
 
 	//reading the configuration file
+	println("READING CONFIGURATION...")
 	bytes, err := os.ReadFile(CONFIG)
 	if err == nil {
 		//setting a json decoder that pass the numbers as strings (better than having an unknow type)
@@ -43,20 +44,26 @@ func main() {
 			}
 		}
 	}
+	println("JAVA VERSION: " + strconv.Itoa(javaVersion))
+	println("LAUNCH: " + launch)
 
 	//scanning for the right java version
+	println("\nSCANNING FOR JAVA...")
 	java, err := helper.GetJava(javaVersion)
 	//if there was an error getting Java i install it then try again
 	if err != nil {
 		println(err.Error())
+		println("DOWNLOADING JAVA...")
 		filename, err := helper.DownloadJava(javaVersion)
 		if err != nil {
 			criticalError(err)
 		}
+		println("INSTALLING JAVA...")
 		err = helper.InstallJava(filename, javaVersion)
 		if err != nil {
 			criticalError(err)
 		}
+		println("JAVA INSTALLED, checking again...")
 		java, err = helper.GetJava(javaVersion)
 		if err != nil {
 			criticalError(err)
