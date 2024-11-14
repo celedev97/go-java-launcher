@@ -79,8 +79,8 @@ func RunJava(java string, filename string, args []string) error {
 	}
 
 	//put filename as the first argument, -jar as the second and the rest of the arguments after
-	args = append([]string{"-jar"}, args...)
-	args = append([]string{absoluteFileName}, args...)
+	firstArgs := []string{"-jar", absoluteFileName}
+	args = append(firstArgs, args...)
 
 	println(java, strings.Join(args, " "))
 	return Command(java, args...).Run()
